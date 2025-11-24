@@ -167,10 +167,6 @@ lexer::next_token ()
     {
       return read_string (loc);
     }
-  if (std::isdigit (static_cast<unsigned char> (c)))
-    {
-      return read_number (loc);
-    }
   if (is_symbol (c))
     {
       return read_symbol (loc);
@@ -215,65 +211,6 @@ lexer::read_string (source_location loc)
     {
       token::type::STRING,
       str,
-      loc
-    };
-}
-
-token
-lexer::read_number (source_location loc)
-{
-  /* TODO: same alloc question as read_string ().  */
-  std::string num;
-
-  /* hex digits  */
-  if (peek () == '0'
-      && !is_at_end ())
-    {
-      num += advance ();
-      if (!is_at_end ()
-          && (peek () == 'x'
-              || peek () == 'X'))
-        {
-          num += advance ();
-          while (!is_at_end ()
-                 && std::isxdigit (static_cast<unsigned char> (peek ())))
-            {
-              num += advance ();
-            }
-          return token
-            {
-              token::type::NUMBER,
-              num,
-              loc
-            };
-        }
-    }
-
-  /* decimal/octal  */
-  while (!is_at_end ()
-         && std::isdigit (static_cast<unsigned char> (peek ())))
-    {
-      num += advance ();
-    }
-
-  /* ip addresses/ranges  */
-  while (!is_at_end ()
-         && (peek () == '.'
-             || peek () == ':'))
-    {
-      num += advance ();
-      while (!is_at_end ()
-             && (std::isxdigit (static_cast<unsigned char> (peek ()))
-                 || std::isdigit (static_cast<unsigned char> (peek ()))))
-        {
-          num += advance ();
-        }
-    }
-
-  return token
-    {
-      token::type::NUMBER,
-      num,
       loc
     };
 }

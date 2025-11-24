@@ -35,7 +35,6 @@ namespace secc
       RPAREN,
       SYMBOL,
       STRING,
-      NUMBER,
       END_OF_FILE,
       INVALID
     };
@@ -83,14 +82,11 @@ namespace secc
     read_string (source_location loc);
 
     token
-    read_number (source_location loc);
-
-    token
     read_symbol (source_location loc);
 
     /* TODO: an iterator, possibly a forward iterator would be nice.  Not sure
        how feasible this is; we want to peek ahead and then backtrack for the
-       allocations in read_string (), read_number (), and read_symbol().  */
+       allocations in read_string () and read_symbol().  */
     std::istream &m_stream;
     std::string_view m_filename;
     size_t m_col{0};
